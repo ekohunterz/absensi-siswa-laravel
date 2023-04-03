@@ -1,0 +1,32 @@
+@extends('layout.main')
+
+@Section('container')
+    <div class="col-12">
+        <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                    <h6 class="text-white text-capitalize ps-3">Detail Jurusan</h6>
+                </div>
+            </div>
+            <div class="table-responsive p-4">
+                <table class="table table-hover">
+                    <tbody>
+                        <tr>
+                            <th class="w-15">Nama Jurusan</th>
+                            <td>: {{ $data_jurusan->nama }}</td>
+                        </tr>
+                        <tr>
+                            <th class="w-15">Kode Jurusan</th>
+                            <td>: {{ $data_jurusan->kode }}</td>
+                        </tr>
+                        <tr>
+                            <th class="w-15">Keterangan</th>
+                            <td>: {{ $data_jurusan->keterangan }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a href="{{ URL::previous() }}" class="btn btn-warning mb-3">Kembali</a>
+            </div>
+        </div>
+    </div>
+@endsection
