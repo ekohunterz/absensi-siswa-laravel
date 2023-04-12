@@ -14,22 +14,20 @@ class KelasController extends Controller
      */
     public function index(Request $request)
     {
-        $kelas = Kelas::query();
+    $kelas = Kelas::with('jurusan')
+        ->when($request->filled('nama'), function ($query) use ($request) {
+            $query->where('nama', 'like', '%' . $request->input('nama') . '%');
+        })
+        ->when($request->filled('jurusan_id'), function ($query) use ($request) {
+            $query->where('jurusan_id', $request->input('jurusan_id'));
+        })
+        ->paginate(20);
 
-        if ($request->filled('nama')) {
-            $kelas->where('nama', 'like', '%' . $request->input('nama') . '%');
-        }
-
-        if ($request->filled('jurusan_id')) {
-            $kelas->where('jurusan_id', $request->input('jurusan_id'));
-        }
-
-        $kelas = $kelas->paginate(20);
-        return view('admin.kelas.index', [
-            'title' => 'Data Kelas',
-            'data_kelas' => $kelas,
-            'jurusan' => Jurusan::all()
-        ]);
+    return view('admin.kelas.index', [
+        'title' => 'Data Kelas',
+        'data_kelas' => $kelas,
+        'jurusan' => Jurusan::all()
+    ]);
     }
 
     /**

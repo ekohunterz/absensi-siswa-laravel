@@ -14,21 +14,20 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $guru = User::query();
+    $guru = User::query()
+        ->where('role', 2)
+        ->when($request->filled('nama'), function ($query) use ($request) {
+            $query->where('nama', 'like', '%' . $request->input('nama') . '%');
+        })
+        ->when($request->filled('status'), function ($query) use ($request) {
+            $query->where('status', $request->input('status'));
+        })
+        ->paginate(10);
 
-        if ($request->filled('nama')) {
-            $guru->where('nama', 'like', '%' . $request->input('nama') . '%');
-        }
-
-        if ($request->filled('status')) {
-            $guru->where('status', $request->input('status'));
-        }
-
-        $guru = $guru->paginate(10);
-        return view('admin.data_guru.index', [
-            'title' => 'Data Guru',
-            'data_guru' => $guru
-        ]);
+    return view('admin.data_guru.index', [
+        'title' => 'Data Guru',
+        'data_guru' => $guru
+    ]);
     }
 
     /**

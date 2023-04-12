@@ -34,64 +34,48 @@ class JadwalController extends Controller
 
     public function index(Request $request)
     {
+    $user = auth()->user();
+    $jadwalQuery = Jadwal::with('tahun_ajaran', 'kelas', 'user', 'mapel')
+        ->when($user->role != 1, function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->when($request->filled('nama'), function ($query) use ($request) {
+            $query->join('mapels', 'jadwals.mapel_id', '=', 'mapels.id')
+                ->where('mapels.nama', 'like', '%' . $request->nama . '%');
+        })
+        ->when($request->filled('tahun_id'), function ($query) use ($request) {
+            $query->where('tahun_ajaran_id', $request->tahun_id);
+        })
+        ->when($request->filled('kelas_id'), function ($query) use ($request) {
+            $query->where('kelas_id', $request->kelas_id);
+        })
+        ->when($request->filled('hari'), function ($query) use ($request) {
+            $query->where('hari', $request->hari);
+        });
 
-        $user = auth()->user()->id;
-        $kelas = $request->input('kelas_id');
-        $tahun = $request->input('tahun_id');
-        $hari = $request->input('hari');
-        $data = [];
+    $data_jadwal = $jadwalQuery->paginate(20);
 
-        $class = Kelas::join('jadwals', 'kelas.id', '=', 'jadwals.kelas_id')
-                ->where('jadwals.user_id', '=', $user)
-                ->select('kelas.*', 'jadwals.id as id_jadwal')
-                ->distinct()
-                ->get();
+    $class = Kelas::with(['jadwals' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }])
+        ->get();
 
-        $data_mapel = Mapel::join('jadwals', 'mapels.id', '=', 'jadwals.mapel_id')
-                    ->where('jadwals.user_id', '=', $user)
-                    ->select('mapels.*')
-                    ->distinct()
-                    ->get();
+    $data_mapel = Mapel::with(['jadwals' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }])
+        ->get();
 
-        $data_tahun = TahunAjaran::all();
+    $data_tahun = TahunAjaran::all();
 
-        if ($request) {
-            $data = Jadwal::query();
+    $viewData = [
+        'title' => 'Data Jadwal',
+        'data_jadwal' => $data_jadwal,
+        'class' => $user->role == 1 ? Kelas::all() : $class,
+        'data_mapel' => $data_mapel,
+        'data_tahun' => $data_tahun,
+        'hari' => $this->day
+    ];
 
-        if ($request->filled('tahun_id')) {
-            $data->where('tahun_ajaran_id',  $tahun);
-        }
-
-        if ($request->filled('kelas_id')) {
-            $data->where('kelas_id', $kelas);
-        }
-
-        if ($request->filled('hari')) {
-            $data->where('hari', $hari);
-        }
-
-        $data = $data->paginate(20);
-        }
-
-        if (Auth::user()->role != 1) {
-            return view('guru.jadwal.index', [
-                'title' => 'Data Jadwal',
-                'data_jadwal' => $data,
-                'class' => $class,
-                'data_mapel' => $data_mapel,
-                'data_tahun' => $data_tahun,
-                'hari' => $this->day
-            ]);
-        }
-
-        return view('admin.jadwal.index', [
-            'title' => 'Data Jadwal',
-            'data_jadwal' => $data,
-            'class' => Kelas::all(),
-            'data_mapel' => Mapel::all(),
-            'data_tahun' => $data_tahun,
-            'hari' => $this->day
-        ]);
+    return view($user->role == 1 ? 'admin.jadwal.index' : 'guru.jadwal.index', $viewData);
     }
 
     /**

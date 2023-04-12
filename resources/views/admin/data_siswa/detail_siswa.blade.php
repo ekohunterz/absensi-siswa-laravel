@@ -32,4 +32,27 @@
             </div>
         </div>
     </div>
+
+    <div class="col-12">
+        <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                    <h6 class="text-white text-capitalize ps-3">Kehadiran Siswa</h6>
+                </div>
+            </div>
+            <div class="p-4" id="calendar"></div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: {!! json_encode($events) !!}
+            });
+            calendar.render();
+        });
+    </script>
 @endsection

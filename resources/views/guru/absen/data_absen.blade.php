@@ -1,100 +1,164 @@
 @extends('layout.main')
 
 @Section('container')
-    <h2>Data Absen</h2>
-    @if (session()->has('success'))
-        <div class="alert alert-success" role="alert">
-            {{ session('success') }}
-        </div>
-    @endif
-    <form action="/data_absen" method="get">
-        <div class="row">
-            <div class="col-3 col-sm-2">
-                <select class="form-control form-control-sm" name="kelas_id" id="kelas_id">
-                    <option value="" hidden>Pilih Kelas</option>
-                    @foreach ($class as $kelas)
-                        @if (old('kelas_id') == $kelas->id || request('kelas_id') == $kelas->id)
-                            <option value="{{ $kelas->id }}" selected>{{ $kelas->nama }}</option>
-                        @else
-                            <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
-                        @endif
-                    @endforeach
-                </select>
+    <div class="col-12">
+        <div class="card my-4">
+            <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                    <h6 class="text-white text-capitalize ps-3">Data Absensi</h6>
+                </div>
             </div>
-            <div class="col-4 col-sm-2">
-                <select class="form-control form-control-sm" name="mapel_id" id="mapel_id">
-                    <option value="" hidden>Pilih Mapel</option>
-                    @foreach ($data_mapel as $mapel)
-                        @if (old('mapel_id') == $mapel->id || request('mapel_id') == $mapel->id)
-                            <option value="{{ $mapel->id }}" selected>{{ $mapel->nama }}</option>
-                        @else
-                            <option value="{{ $mapel->id }}">{{ $mapel->nama }}</option>
-                        @endif
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-4 col-sm-2">
-                <input type="date" class="form-control form-control-sm" name="tanggal" id="tanggal"
-                    value="{{ request('tanggal') }}">
-            </div>
-            <div class="col-2 col-sm-2">
-                <button class="btn btn-primary btn-sm" type="submit">Pilih</button>
+            <form method="GET" action="/data_absen">
+                <div class="mx-3 my-2">
+                    <div class="row align-items-center">
+                        <div class="col-md-2 ">
+                            <div class="input-group input-group-outline my-3">
+                                <select class="form-control" name="kelas_id" id="kelas_id">
+                                    <option value="" hidden>Pilih Kelas</option>
+                                    @foreach ($class as $kelas)
+                                        @if (old('kelas_id') == $kelas->id || request('kelas_id') == $kelas->id)
+                                            <option value="{{ $kelas->id }}" selected>{{ $kelas->nama }}</option>
+                                        @else
+                                            <option value="{{ $kelas->id }}">{{ $kelas->nama }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 ">
+                            <div class="input-group input-group-outline my-3">
+                                <select class="form-control" name="mapel_id" id="mapel_id">
+                                    <option value="" hidden>Pilih Mapel</option>
+                                    @foreach ($data_mapel as $mapel)
+                                        @if (old('mapel_id') == $mapel->id || request('mapel_id') == $mapel->id)
+                                            <option value="{{ $mapel->id }}" selected>{{ $mapel->nama }}</option>
+                                        @else
+                                            <option value="{{ $mapel->id }}">{{ $mapel->nama }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 ">
+                            <div class="input-group input-group-outline my-3">
+                                <input class="form-control" type="date" id="tanggal" name="tanggal"
+                                    value="{{ request('tanggal') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-self-end">
+                            <button type="submit" class="btn btn-success">Pilih</button>
+                            @if ($data->count())
+                                <button class="btn btn-warning ms-2" formaction="/guru/data_absen/export">Export
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="card-body px-0 pb-2">
                 @if ($data->count())
-                    <button class="btn btn-success btn-sm" formaction="/guru/data_absen/export">Export </button>
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nama Siswa</th>
+                                    <th scope="col">NISN</th>
+                                    <th scope="col">Tanggal</th>
+                                    <th scope="col">Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $siswa)
+                                    <tr>
+                                        <td class="px-4">{{ $loop->iteration }}</td>
+                                        <td class="px-4">{{ $siswa->siswa->nama }}</td>
+                                        <td class="px-4">{{ $siswa->siswa->nisn }}</td>
+                                        <td class="px-4">{{ $siswa->tanggal }}</td>
+                                        <td class="px-4">{{ $siswa->status }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p class="lead text-center">Silahkan pilih kelas, mapel dan tanggal</p>
                 @endif
-            </div>
-        </div>
-    </form>
 
-    @if ($data->count())
-        <div class="table-responsive">
-            <table class="table table-striped table-sm">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Nama Siswa</th>
-                        <th scope="col">NISN</th>
-                        <th scope="col">Tanggal</th>
-                        <th scope="col">Keterangan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $siswa)
-                        <tr>
-                            <input type="hidden" name="siswa_id[]" value="{{ $siswa->id }}">
-                            <input type="hidden" name="jadwal_id" value="{{ request('kelas_id') }}">
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $siswa->siswa->nama }}</td>
-                            <td>{{ $siswa->siswa->nisn }}</td>
-                            <td>{{ $siswa->tanggal }}</td>
-                            <td>{{ $siswa->status }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="col-md-4">
-                <table class="table table-striped table-sm" id="rekap">
-                    <tr>
-                        <th>Hadir</th>
-                        <th>{{ $data->where('status', '=', 'Hadir')->count() }}</th>
-                    </tr>
-                    <tr>
-                        <th>Sakit</th>
-                        <th>{{ $data->where('status', '=', 'Sakit')->count() }}</th>
-                    </tr>
-                    <tr>
-                        <th>Izin</th>
-                        <th>{{ $data->where('status', '=', 'Izin')->count() }}</th>
-                    </tr>
-                    <tr>
-                        <th>Alpha</th>
-                        <th>{{ $data->where('status', '=', 'Alpha')->count() }}</th>
-                    </tr>
-                </table>
             </div>
         </div>
-    @else
-        <div class="text-center fs-5 mt-5">Silahkan Pilih Kelas, Mapel dan Tanggal</div>
+    </div>
+    @if ($data->count())
+        <div class="row mt-4">
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">check_box</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Hadir</p>
+                            <h4 class="mb-0">{{ $data->where('status', '=', 'Hadir')->count() }} Siswa</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">medication</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Sakit</p>
+                            <h4 class="mb-0">{{ $data->where('status', '=', 'Sakit')->count() }} Siswa</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">comment</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Izin</p>
+                            <h4 class="mb-0">{{ $data->where('status', '=', 'Izin')->count() }} Siswa</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+                <div class="card">
+                    <div class="card-header p-3 pt-2">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">cancel</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Alpha</p>
+                            <h4 class="mb-0">{{ $data->where('status', '=', 'Alpha')->count() }} Siswa</h4>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-0">
+                    <div class="card-footer p-3">
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
     @if (!empty(request('kelas_id')))
         <script>

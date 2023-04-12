@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absen;
 use App\Models\DataSiswa;
 use App\Models\Kelas;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 class DataSiswaController extends Controller
@@ -16,17 +18,14 @@ class DataSiswaController extends Controller
      */
     public function index(Request $request)
     {
-        $siswa = DataSiswa::query();
-
-        if ($request->filled('nama')) {
-            $siswa->where('nama', 'like', '%' . $request->input('nama') . '%');
-        }
-
-        if ($request->filled('kelas_id')) {
-            $siswa->where('kelas_id', $request->input('kelas_id'));
-        }
-
-        $siswa = $siswa->paginate(20);
+        $siswa = DataSiswa::with('kelas')
+        ->when($request->filled('nama'), function ($query) use ($request) {
+            return $query->where('nama', 'like', '%' . $request->input('nama') . '%');
+        })
+        ->when($request->filled('kelas_id'), function ($query) use ($request) {
+            return $query->where('kelas_id', $request->input('kelas_id'));
+        })
+        ->paginate(20);
 
         if (Auth::user()->role != 1) {
             // jika tidak, tampilkan halaman yang sesuai
@@ -83,10 +82,25 @@ class DataSiswaController extends Controller
      * Display the specified resource.
      */
     public function show(DataSiswa $dataSiswa)
-    {
+    {;
+        $data_absen = Absen::with(['jadwal.kelas', 'jadwal.mapel', 'siswa'])
+                    ->where('siswa_id', $dataSiswa->id)
+                    ->get();
+
+                    $events = [];
+                    foreach ($data_absen as $absen) {
+                        $event = [
+                            'title' => $absen->status . ' - ' . $absen->jadwal->mapel->nama,
+                            'start' => $absen->tanggal,
+                            'color' => $absen->status == 'Hadir' ? 'green' : ($absen->status == 'Izin' || $absen->status == 'Sakit' ? 'orange' : 'red')
+                        ];
+                        array_push($events, $event);
+                    }
+
         return view('admin.data_siswa.detail_siswa', [
             'title' => 'Data Siswa | Detail Siswa',
-            'data_siswa' => $dataSiswa
+            'data_siswa' => $dataSiswa,
+            'events' => $events
         ]);
     }
 

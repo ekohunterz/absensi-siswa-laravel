@@ -14,24 +14,22 @@ class MapelController extends Controller
      */
     public function index(Request $request)
     {
-        $mapel = Mapel::query();
 
-        if ($request->filled('nama')) {
-            $mapel->where('nama', 'like', '%' . $request->input('nama') . '%');
-        }
+        $mapel = Mapel::with('jurusan')
+        ->when($request->filled('nama'), function ($query) use ($request) {
+            $query->where('nama', 'like', '%' . $request->input('nama') . '%');
+        })
+        ->when($request->filled('jurusan_id'), function ($query) use ($request) {
+            $query->where('jurusan_id', $request->input('jurusan_id'));
+        })
+        ->paginate(20);
 
-        if ($request->filled('jurusan_id')) {
-            $mapel->where('jurusan_id', $request->input('jurusan_id'));
-        }
-
-        $mapel = $mapel->paginate(20);
-
-        return view('admin.mapel.index', [
-            'title' => 'Data Mata Pelajaran',
-            'data_mapel' => $mapel,
-            'jurusan' => Jurusan::all()
-        ]);
-    }
+    return view('admin.mapel.index', [
+        'title' => 'Data Mata Pelajaran',
+        'data_mapel' => $mapel,
+        'jurusan' => Jurusan::all()
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.

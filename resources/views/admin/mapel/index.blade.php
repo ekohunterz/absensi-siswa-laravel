@@ -12,7 +12,8 @@
                 <div class="mx-3 my-2">
                     <div class="row align-items-center">
                         <div class="col-md-3">
-                            <div class="input-group input-group-outline my-3">
+                            <div
+                                class="input-group input-group-outline my-3 {{ request('nama') != '' ? 'is-filled' : '' }}">
                                 <label class="form-label">Nama</label>
                                 <input class="form-control" type="text" id="nama" name="nama"
                                     value="{{ request('nama') }}">
@@ -59,11 +60,7 @@
                                 <tr>
                                     <td class="px-4">{{ $loop->iteration }}</td>
                                     <td class="px-4">{{ $mapel->nama }}</td>
-                                    <td class="px-4"> @empty($mapel->jurusan->nama)
-                                            -
-                                        @else
-                                            {{ $mapel->jurusan->nama }}
-                                        @endempty
+                                    <td class="px-4">{{ $mapel->jurusan->nama ?? '-' }}
                                     </td>
                                     <td class="px-4">{{ $mapel->keterangan }}</td>
                                     <td class="px-4">

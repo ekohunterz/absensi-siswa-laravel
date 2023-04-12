@@ -23,7 +23,7 @@
                         <label class="form-label" for="kode">Kode Jurusan:</label>
                         <input type="text" name="kode"
                             class="form-control border border-2 p-2 @error('kode') is-invalid @enderror" id="kode"
-                            value="{{ old('nama', $data_jurusan->nama) }}" onfocus="focused(this)"
+                            value="{{ old('kode', $data_jurusan->kode) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
                     </div>
                     <div class="mb-3 col-md-12">
@@ -41,3 +41,16 @@
         </div>
     </div>
 @endsection
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const formNama = document.getElementById("nama");
+        const formKode = document.getElementById("kode");
+
+        formNama.addEventListener("change", () => {
+            formKode.value = formNama.value
+                .split(" ")
+                .map((kata) => kata.charAt(0))
+                .join("");
+        });
+    });
+</script>

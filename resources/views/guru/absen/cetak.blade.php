@@ -6,21 +6,21 @@
         </tr>
         <tr>
             <td></td>
-            <td>Mata Pelajaran : {{ $data->first()->mapel }}</td>
+            <td>Mata Pelajaran : {{ $data->first()->jadwal->mapel->nama }}</td>
             <td></td>
             <td></td>
             <td></td>
             <td>Tahun Ajaran</td>
-            <td>: {{ $data->first()->tahun }}</td>
+            <td>: {{ $data->first()->jadwal->tahun_ajaran->nama }}</td>
         </tr>
         <tr>
             <td></td>
-            <td>Kelas : {{ $data->first()->kelas }}</td>
+            <td>Kelas : {{ $data->first()->siswa->kelas->nama }}</td>
             <td></td>
             <td></td>
             <td></td>
             <td>Semester</td>
-            <td>: {{ $data->first()->semester }}</td>
+            <td>: {{ $data->first()->jadwal->tahun_ajaran->semester }}</td>
         </tr>
         <tr>
 
@@ -39,7 +39,7 @@
         @foreach ($data as $row)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $row->nama }}</td>
+                <td>{{ $row->siswa->nama }}</td>
                 <td>{{ $row->tSakit }}</td>
                 <td>{{ $row->tIjin }}</td>
                 <td>{{ $row->tHadir }}</td>

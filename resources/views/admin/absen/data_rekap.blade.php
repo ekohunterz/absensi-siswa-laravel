@@ -105,7 +105,7 @@
                                 @foreach ($data as $siswa)
                                     <tr>
                                         <td class="px-4">{{ $loop->iteration }}</td>
-                                        <td class="px-4">{{ $siswa->nama }}</td>
+                                        <td class="px-4">{{ $siswa->siswa->nama }}</td>
                                         <td class="px-4">{{ $siswa->tHadir }}</td>
                                         <td class="px-4">{{ $siswa->tAlpha }}</td>
                                         <td class="px-4">{{ $siswa->tSakit }}</td>

@@ -8,11 +8,12 @@
                     <h6 class="text-white text-capitalize ps-3">Data Jurusan</h6>
                 </div>
             </div>
-            <form method="GET" action="/admin/data_guru">
+            <form method="GET" action="/admin/jurusan">
                 <div class="mx-3 my-2">
                     <div class="row align-items-center">
                         <div class="col-md-3">
-                            <div class="input-group input-group-outline my-3">
+                            <div
+                                class="input-group input-group-outline my-3 {{ request('nama') != '' ? 'is-filled' : '' }}">
                                 <label class="form-label">Nama</label>
                                 <input class="form-control" type="text" id="nama" name="nama"
                                     value="{{ request('nama') }}">

@@ -6,7 +6,7 @@
         </tr>
         <tr>
             <td></td>
-            <td>Mata Pelajaran : {{ $data->first()->mapel }}</td>
+            <td>Mata Pelajaran : {{ $data->first()->jadwal->mapel->nama }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -15,7 +15,7 @@
         </tr>
         <tr>
             <td></td>
-            <td>Kelas : {{ $data->first()->kelas }}</td>
+            <td>Kelas : {{ $data->first()->siswa->kelas->nama }}</td>
             <td></td>
             <td></td>
             <td></td>

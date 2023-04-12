@@ -9,4 +9,8 @@ class TahunAjaran extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+
+    public function jadwals(){
+        return $this->hasMany(Jadwal::class);
+    }
 }

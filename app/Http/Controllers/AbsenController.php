@@ -14,6 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapExport;
 use App\Exports\AbsenExport;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class AbsenController extends Controller
 {
@@ -64,8 +65,8 @@ class AbsenController extends Controller
             ['jadwal_id' => $jadwal_id, 'status' => $status[$id]]
         );
     }
-
-    return redirect()->back()->withInput()->with('success', 'Absen berhasil disimpan');
+    Alert::success('Sukses', 'Absen berhasil disimpan');
+    return redirect()->back()->withInput();
 }
 
 public function update(Request $request)
@@ -82,61 +83,50 @@ public function update(Request $request)
             ['jadwal_id' => $jadwal_id, 'status' => $status[$key]]
         );
     }
-        return redirect()->back()->withInput()->with('success', 'Absen berhasil disimpan');
+        Alert::success('Sukses', 'Absen berhasil disimpan');
+        return redirect()->back()->withInput();
     }
 
 public function data_absen(Request $request){
 
-    $user = auth()->user()->id;
+    $user = auth()->user();
     $kelas = $request->input('kelas_id');
     $tanggal = $request->input('tanggal');
     $mapel = $request->input('mapel_id');
     $data = [];
 
-    if ($request) {
-        $data = Absen::join('jadwals', 'absens.jadwal_id', '=', 'jadwals.id')
-            ->join('kelas', 'kelas.id', '=', 'jadwals.kelas_id')
-            ->join('mapels', 'mapels.id', '=', 'jadwals.mapel_id')
-            ->leftjoin('data_siswas', 'data_siswas.id', '=', 'absens.siswa_id')
-            ->where('jadwals.mapel_id', '=', $mapel)
-            ->where('jadwals.kelas_id', '=', $kelas)
-            ->where('absens.tanggal', '=', $tanggal)
-            ->orderBy('data_siswas.nama')
-            ->get();
-    }
+    $data = Absen::with(['jadwal.kelas', 'jadwal.mapel', 'siswa'])
+        ->whereHas('jadwal', function ($query) use ($mapel, $kelas) {
+            $query->where('mapel_id', $mapel)->where('kelas_id', $kelas);
+        })
+        ->where('tanggal', $tanggal)
+        ->get();
 
-    $class = Kelas::join('jadwals', 'kelas.id', '=', 'jadwals.kelas_id')
-                ->where('jadwals.user_id', '=', $user)
-                ->select('kelas.*', 'jadwals.id as id_jadwal')
-                ->distinct()
-                ->get();
+    $class = Kelas::whereHas('jadwals', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->distinct()
+        ->get();
 
-    $data_mapel = Mapel::join('jadwals', 'mapels.id', '=', 'jadwals.mapel_id')
-                    ->where('jadwals.user_id', '=', $user)
-                    ->select('mapels.*')
-                    ->distinct()
-                    ->get();
+    $data_mapel = Mapel::whereHas('jadwals', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->distinct()
+        ->get();
 
-    if(Auth::user()->role == 1){
-        return view('admin.absen.data_absen', [
-                    'title' => 'Absen Siswa',
-                    'class' => Kelas::all(),
-                    'data_mapel' => Mapel::all(),
-                    'data' => $data
-                    ]);
-    }
+        $viewData = [
+            'title' => 'Data Jadwal',
+            'data' => $data,
+            'class' => $user->role == 1 ? Kelas::all() : $class,
+            'data_mapel' => $user->role == 1 ? Mapel::all() : $data_mapel
+        ];
 
-    return view('guru.absen.data_absen', [
-        'title' => 'Absen Siswa',
-        'class' => $class,
-        'data_mapel' => $data_mapel,
-        'data' => $data
-    ]);
+        return view($user->role == 1 ? 'admin.absen.data_absen' : 'guru.absen.data_absen', $viewData);
 }
 
 public function data_rekap(Request $request){
 
-    $user = auth()->user()->id;
+    $user = auth()->user();
     $kelas = $request->input('kelas_id');
     $tahun = $request->input('tahun_id');
     $mapel = $request->input('mapel_id');
@@ -144,37 +134,37 @@ public function data_rekap(Request $request){
     $data = [];
 
     if ($request) {
-            $query = DB::table('absens as a')
-                            ->join('jadwals', 'a.jadwal_id', '=', 'jadwals.id')
-                            ->join('kelas', 'kelas.id', '=', 'jadwals.kelas_id')
-                            ->join('mapels', 'mapels.id', '=', 'jadwals.mapel_id')
-                            ->join('data_siswas as s', 's.id', '=', 'a.siswa_id')
-                            ->where('jadwals.mapel_id', '=', $mapel)
-                            ->where('jadwals.kelas_id', '=', $kelas)
-                            ->where('jadwals.tahun_ajaran_id', '=', $tahun)
-                            ->select(DB::raw("count(case when a.status = 'Sakit' then 1 else null end) as tSakit,
-                                        count(case when a.status = 'Izin' then 1 else null end) as tIjin,
-                                        count(case when a.status = 'Hadir' then 1 else null end) as tHadir,
-                                        count(case when a.status != 'Hadir' then 1 else null end) as total,
-                                        count(case when a.status = 'Alpha' then 1 else null end) as tAlpha,s.nama"))
-                            ->groupBy('s.nama');
+        $data = Absen::with('siswa')
+        ->join('jadwals', 'absens.jadwal_id', '=', 'jadwals.id')
+        ->where('jadwals.mapel_id', '=', $mapel)
+        ->where('jadwals.kelas_id', '=', $kelas)
+        ->where('jadwals.tahun_ajaran_id', '=', $tahun)
+        ->select(DB::raw("count(case when absens.status = 'Sakit' then 1 else null end) as tSakit,
+        count(case when absens.status = 'Izin' then 1 else null end) as tIjin,
+        count(case when absens.status = 'Hadir' then 1 else null end) as tHadir,
+        count(case when absens.status != 'Hadir' then 1 else null end) as total,
+        count(case when absens.status = 'Alpha' then 1 else null end) as tAlpha, absens.siswa_id"))
+        ->groupBy('absens.siswa_id');
 
-                            if(!empty($bulan_id)){
-                                $query->whereMonth('a.tanggal', '=', $bulan_id);
-                            }
-            $data = $query->get();
-                    }
+        if (!empty($bulan_id)) {
+            $data->whereMonth('absens.tanggal', '=', $bulan_id);
+        }
+            $data->join('data_siswas', 'absens.siswa_id', '=', 'data_siswas.id')
+                 ->orderBy('data_siswas.nama', 'asc');
+
+        $data = $data->get();
+    }
 
 
 
     $class = Kelas::join('jadwals', 'kelas.id', '=', 'jadwals.kelas_id')
-                ->where('jadwals.user_id', '=', $user)
+                ->where('jadwals.user_id', '=', $user->id)
                 ->select('kelas.*', 'jadwals.id as id_jadwal')
                 ->distinct()
                 ->get();
 
     $data_mapel = Mapel::join('jadwals', 'mapels.id', '=', 'jadwals.mapel_id')
-                    ->where('jadwals.user_id', '=', $user)
+                    ->where('jadwals.user_id', '=', $user->id)
                     ->select('mapels.*')
                     ->distinct()
                     ->get();
@@ -196,25 +186,16 @@ public function data_rekap(Request $request){
         ['id' => '12', 'nama' => 'Desember'],
     ]);
 
-    if(Auth::user()->role == 1){
-        return view('admin.absen.data_rekap', [
-                    'title' => 'Rekap Absen Siswa',
-                    'class' => Kelas::all(),
-                    'data_mapel' => Mapel::all(),
-                    'data' => $data,
-                    'data_tahun' => $data_tahun,
-                    'bulan' => $bulan
-                    ]);
-    }
-
-    return view('guru.absen.data_rekap', [
+    $viewData = [
         'title' => 'Rekap Absen Siswa',
-        'class' => $class,
-        'data_mapel' => $data_mapel,
         'data' => $data,
+        'class' => $user->role == 1 ? Kelas::all() : $class,
+        'data_mapel' => $user->role == 1 ? Mapel::all() : $data_mapel,
         'data_tahun' => $data_tahun,
         'bulan' => $bulan
-    ]);
+        ];
+
+        return view($user->role == 1 ? 'admin.absen.data_rekap' : 'guru.absen.data_rekap', $viewData);
 }
 
 
@@ -226,27 +207,25 @@ public function export(Request $request)
     $data = [];
 
     if ($request) {
-            $query = DB::table('absens as a')
-                            ->join('jadwals', 'a.jadwal_id', '=', 'jadwals.id')
-                            ->join('kelas', 'kelas.id', '=', 'jadwals.kelas_id')
-                            ->join('tahun_ajarans as t', 't.id', '=', 'jadwals.tahun_ajaran_id')
-                            ->join('mapels', 'mapels.id', '=', 'jadwals.mapel_id')
-                            ->join('data_siswas as s', 's.id', '=', 'a.siswa_id')
-                            ->where('jadwals.mapel_id', '=', $mapel)
-                            ->where('jadwals.kelas_id', '=', $kelas)
-                            ->where('jadwals.tahun_ajaran_id', '=', $tahun)
-                            ->select(DB::raw("s.nama, mapels.nama as mapel, t.nama as tahun, t.semester, kelas.nama as kelas,
-                                        count(case when a.status = 'Sakit' then 1 else null end) as tSakit,
-                                        count(case when a.status = 'Izin' then 1 else null end) as tIjin,
-                                        count(case when a.status = 'Hadir' then 1 else null end) as tHadir,
-                                        count(case when a.status != 'Hadir' then 1 else null end) as total,
-                                        count(case when a.status = 'Alpha' then 1 else null end) as tAlpha"))
-                            ->groupBy('s.nama', 'mapel', 'tahun', 't.semester', 'kelas');
+        $data = Absen::with('siswa', 'jadwal.mapel', 'jadwal.tahun_ajaran')
+        ->join('jadwals', 'absens.jadwal_id', '=', 'jadwals.id')
+        ->where('jadwals.mapel_id', '=', $mapel)
+        ->where('jadwals.kelas_id', '=', $kelas)
+        ->where('jadwals.tahun_ajaran_id', '=', $tahun)
+        ->select(DB::raw("count(case when absens.status = 'Sakit' then 1 else null end) as tSakit,
+        count(case when absens.status = 'Izin' then 1 else null end) as tIjin,
+        count(case when absens.status = 'Hadir' then 1 else null end) as tHadir,
+        count(case when absens.status != 'Hadir' then 1 else null end) as total,
+        count(case when absens.status = 'Alpha' then 1 else null end) as tAlpha, absens.siswa_id, absens.jadwal_id"))
+        ->groupBy('absens.siswa_id', 'absens.jadwal_id');
 
-                            if(!empty($bulan_id)){
-                                $query->whereMonth('a.tanggal', '=', $bulan_id);
-                            }
-            $data = $query->get();
+        if (!empty($bulan_id)) {
+            $data->whereMonth('absens.tanggal', '=', $bulan_id);
+        }
+
+        $data->join('data_siswas', 'absens.siswa_id', '=', 'data_siswas.id')
+             ->orderBy('data_siswas.nama', 'asc');
+        $data = $data->get();
 
         }
 
@@ -261,17 +240,13 @@ public function export_hadir(Request $request)
     $data = [];
 
     if ($request) {
-        $data = Absen::join('jadwals', 'absens.jadwal_id', '=', 'jadwals.id')
-        ->join('kelas', 'kelas.id', '=', 'jadwals.kelas_id')
-        ->join('mapels', 'mapels.id', '=', 'jadwals.mapel_id')
-        ->leftjoin('data_siswas', 'data_siswas.id', '=', 'absens.siswa_id')
-        ->select('data_siswas.nama as nama_siswa', 'data_siswas.nisn', 'mapels.nama as mapel', 'kelas.nama as kelas', 'absens.*')
-        ->where('jadwals.mapel_id', '=', $mapel)
-        ->where('jadwals.kelas_id', '=', $kelas)
-        ->where('absens.tanggal', '=', $tanggal)
-        ->orderBy('data_siswas.nama')->get();
-
-        }
+        $data = Absen::with('jadwal.kelas', 'jadwal.mapel', 'siswa')
+            ->whereHas('jadwal', function ($query) use ($mapel, $kelas) {
+                $query->where('mapel_id', $mapel)->where('kelas_id', $kelas);
+            })
+            ->where('tanggal', $tanggal)
+            ->get();
+    }
 
         return Excel::download(new AbsenExport($data), 'absen_' . $tanggal . $kelas . $mapel.'.xls',);
 }

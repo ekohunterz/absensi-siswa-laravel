@@ -12,11 +12,16 @@ class TahunAjaranController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $tahun = TahunAjaran::when($request->filled('nama'), function ($query) use ($request) {
+            $query->where('nama', 'like', '%' . $request->input('nama') . '%')->orWhere('semester', 'like', '%' . $request->input('nama') . '%');
+        })
+        ->paginate(20);
+
         return view('admin.tahun_ajaran.index', [
             'title' => 'Data Tahun Ajaran',
-            'data_tahun' => TahunAjaran::paginate(10)
+            'data_tahun' => $tahun
         ]);
     }
 

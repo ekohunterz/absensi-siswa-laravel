@@ -12,7 +12,8 @@
                 <div class="mx-3 my-2">
                     <div class="row align-items-center">
                         <div class="col-md-2">
-                            <div class="input-group input-group-outline my-3">
+                            <div
+                                class="input-group input-group-outline my-3 {{ request('nama') != '' ? 'is-filled' : '' }}">
                                 <label class="form-label">Nama</label>
                                 <input class="form-control" type="text" id="nama" name="nama"
                                     value="{{ request('nama') }}">

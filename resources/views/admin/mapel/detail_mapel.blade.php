@@ -17,11 +17,7 @@
                         </tr>
                         <tr>
                             <th class="w-15">Jurusan</th>
-                            <td>: @empty($data_mapel->jurusan->nama)
-                                    -
-                                @else
-                                    {{ $data_mapel->jurusan->nama }}
-                                @endempty
+                            <td>: {{ $mapel->jurusan->nama ?? '-' }}
                             </td>
                         </tr>
                         <tr>

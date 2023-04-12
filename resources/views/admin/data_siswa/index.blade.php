@@ -12,7 +12,8 @@
                 <div class="mx-3 my-2">
                     <div class="row align-items-center">
                         <div class="col-md-3">
-                            <div class="input-group input-group-outline my-3">
+                            <div
+                                class="input-group input-group-outline my-3 {{ request('nama') != '' ? 'is-filled' : '' }}">
                                 <label class="form-label">Nama</label>
                                 <input class="form-control" type="text" id="nama" name="nama"
                                     value="{{ request('nama') }}">
@@ -34,6 +35,7 @@
                         </div>
                         <div class="col-md-3 d-flex align-self-end">
                             <button type="submit" class="btn btn-success">Filter</button>
+                            <a href="/data_siswa" class="btn btn-danger ms-2">Reset</a>
                         </div>
                         <div class="col-md-3 text-end  align-self-end">
                             <a href="/data_siswa/create" type="button" class="btn btn-primary"><i
