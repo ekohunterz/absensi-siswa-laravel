@@ -72,6 +72,7 @@
                         </div>
                         <div class="col-md-3 d-flex align-self-end">
                             <button type="submit" class="btn btn-success">Pilih</button>
+                            <a href="/data_rekap" class="btn btn-danger ms-2">Reset</a>
                             @if ($data->count())
                                 <button class="btn btn-warning ms-2" formaction="/guru/data_rekap/export">Export
                                 </button>

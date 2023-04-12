@@ -29,6 +29,7 @@
                         </tr>
                     </tbody>
                 </table>
+                <a href="{{ URL::previous() }}" class="btn btn-warning mb-3">Kembali</a>
             </div>
         </div>
     </div>

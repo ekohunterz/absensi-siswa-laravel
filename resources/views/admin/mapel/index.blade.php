@@ -35,6 +35,7 @@
                         </div>
                         <div class="col-md-3 d-flex align-self-end">
                             <button type="submit" class="btn btn-success">Filter</button>
+                            <a href="/admin/mapel" class="btn btn-danger ms-2">Reset</a>
                         </div>
                         <div class="col-md-3 text-end  align-self-end">
                             <a href="/admin/mapel/create" type="button" class="btn btn-primary"><i

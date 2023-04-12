@@ -31,6 +31,7 @@
                         </div>
                         <div class="col-md-3 d-flex align-self-end">
                             <button type="submit" class="btn btn-success">Filter</button>
+                            <a href="/admin/data_guru" class="btn btn-danger ms-2">Reset</a>
                         </div>
                         <div class="col-md-3 text-end  align-self-end">
                             <a href="/admin/data_guru/create" type="button" class="btn btn-primary"><i

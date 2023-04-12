@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\RekapExport;
 use App\Exports\AbsenExport;
+use App\Models\Jadwal;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -93,6 +94,17 @@ public function data_absen(Request $request){
     $kelas = $request->input('kelas_id');
     $tanggal = $request->input('tanggal');
     $mapel = $request->input('mapel_id');
+    $jadwal = [];
+    if ($tanggal) {
+        $hari = Carbon::createFromFormat('Y-m-d', $tanggal)->translatedFormat('l');
+        $jadwal = Jadwal::where('mapel_id', $mapel)
+                ->where('kelas_id', $kelas)
+                ->when($user->role != 1, function ($query) use ($user) {
+                    return $query->where('user_id', $user->id);
+                })
+                ->where('hari', $hari)
+                ->first();
+    }
     $data = [];
 
     $data = Absen::with(['jadwal.kelas', 'jadwal.mapel', 'siswa'])
@@ -118,7 +130,8 @@ public function data_absen(Request $request){
             'title' => 'Data Jadwal',
             'data' => $data,
             'class' => $user->role == 1 ? Kelas::all() : $class,
-            'data_mapel' => $user->role == 1 ? Mapel::all() : $data_mapel
+            'data_mapel' => $user->role == 1 ? Mapel::all() : $data_mapel,
+            'jadwal' => $jadwal
         ];
 
         return view($user->role == 1 ? 'admin.absen.data_absen' : 'guru.absen.data_absen', $viewData);

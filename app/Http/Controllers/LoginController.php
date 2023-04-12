@@ -15,20 +15,23 @@ class LoginController extends Controller
     }
 
     public function auth(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+{
+    $field = filter_var($request->input('email'), FILTER_VALIDATE_EMAIL) ? 'email' : 'nip';
+    $request->merge([$field => $request->input('email')]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+    $credentials = $request->validate([
+        $field => ['required'],
+        'password' => ['required'],
+    ]);
 
-            return redirect()->intended('/');
-        }
+    if (Auth::attempt($credentials)) {
+        $request->session()->regenerate();
 
-        return back()->with('loginError', 'Login Gagal!');
+        return redirect()->intended('/');
     }
+
+    return back()->with('loginError', 'Login Gagal!');
+}
 
     public function logout(Request $request)
 {

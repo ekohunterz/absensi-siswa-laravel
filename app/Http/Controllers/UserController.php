@@ -115,4 +115,38 @@ class UserController extends Controller
         Alert::success('Hapus Guru', 'Guru berhasil dihapus');
         return redirect('admin/data_guru');
     }
+
+    public function profile(Request $request)
+    {
+    $user = auth()->user();
+    $guru = User::where('id', $user->id)
+        ->first();
+
+    return view('dashboard.profile', [
+        'title' => 'Profile',
+        'data_guru' => $guru
+    ]);
+    }
+
+    public function update_profile(Request $request)
+    {
+        $user = auth()->user();
+        $data_guru = User::where('id', $user->id)
+                    ->first();
+        $rules = [
+                'nama' => 'required|max:255',
+                'alamat' => 'required|max:255',
+                'no_HP' => 'required',
+                'email' => 'required'
+        ];
+
+        if($request->nip != $data_guru->nip){
+            $rules['nip'] = 'required|unique:users|max:18';
+        }
+
+        $validatedData = $request->validate($rules);
+        User::where('id', $user->id)->update($validatedData);
+        Alert::success('Edit Profile', 'Profile berhasil diedit');
+        return redirect('profile');
+    }
 }

@@ -65,6 +65,7 @@
                         </div>
                         <div class="col-md-2 d-flex align-self-end">
                             <button type="submit" class="btn btn-success">Filter</button>
+                            <a href="/data_jadwal" class="btn btn-danger ms-2">Reset</a>
                         </div>
                     </div>
                 </div>

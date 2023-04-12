@@ -42,5 +42,7 @@ Route::get('/data_rekap', [AbsenController::class, 'data_rekap'])->middleware('a
 Route::post('/absen', [AbsenController::class, 'store'])->middleware('auth');
 Route::get('/guru/data_rekap/export', [AbsenController::class, 'export'])->middleware('auth');
 Route::get('/guru/data_absen/export', [AbsenController::class, 'export_hadir'])->middleware('auth');
+Route::get('/profile', [UserController::class, 'profile'])->middleware('auth');
+Route::post('/profile/update', [UserController::class, 'update_profile'])->middleware('auth');
 
 

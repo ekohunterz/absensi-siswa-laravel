@@ -66,6 +66,7 @@
                         </div>
                         <div class="col-md-2 d-flex align-self-end">
                             <button type="submit" class="btn btn-success">Filter</button>
+                            <a href="/jadwal" class="btn btn-danger ms-2">Reset</a>
                         </div>
                         <div class="col-md-2 text-end  align-self-end">
                             <a href="/jadwal/create" type="button" class="btn btn-primary"><i class="fa fa-plus"></i></a>

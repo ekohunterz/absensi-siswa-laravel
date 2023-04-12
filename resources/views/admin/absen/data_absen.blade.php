@@ -47,6 +47,7 @@
                         </div>
                         <div class="col-md-3 d-flex align-self-end">
                             <button type="submit" class="btn btn-success">Pilih</button>
+                            <a href="/data_absen" class="btn btn-danger ms-2">Reset</a>
                             @if ($data->count())
                                 <button class="btn btn-warning ms-2" formaction="/guru/data_absen/export">Export
                                 </button>
@@ -56,7 +57,7 @@
                 </div>
             </form>
             <div class="card-body px-0 pb-2">
-                @if ($data->count())
+                @if ($jadwal && $data->count())
                     <div class="table-responsive p-0">
                         <form action="/data_absen/update" method="post">
                             @csrf
@@ -110,8 +111,12 @@
                             </div>
                         </form>
                     </div>
-                @else
-                    <p class="lead text-center">Silahkan pilih kelas, mapel dan tanggal</p>
+                @elseif ($jadwal && !$data->count())
+                    <p class="lead text-center">Guru tidak melakukan absen</p>
+                @elseif (!request('tanggal'))
+                    <p class="lead text-center">Pilih kelas, mapel dan tanggal</p>
+                @elseif (!$jadwal)
+                    <p class="lead text-center">Tidak ada jadwal pada hari yang dipilih</p>
                 @endif
 
             </div>
