@@ -58,7 +58,12 @@ class AbsenController extends Controller
     $siswa_id = $request->siswa_id;
     $status = $request->status;
     $jadwal_id = $request->jadwal_id;
-    $tanggal = Carbon::now()->format('Y-m-d');
+    $kelas = $request->kelas_id;
+    if ($request->tanggal != ''){
+        $tanggal = $request->tanggal;
+    }else{
+        $tanggal = Carbon::now()->format('Y-m-d');
+    }
 
     foreach($siswa_id as $key => $id) {
         Absen::updateOrCreate(
@@ -66,6 +71,13 @@ class AbsenController extends Controller
             ['jadwal_id' => $jadwal_id, 'status' => $status[$id]]
         );
     }
+
+    $mapel = Mapel::join('jadwals', 'mapels.id', '=', 'jadwals.mapel_id')
+                    ->where('jadwals.id', $jadwal_id)->first();
+
+    $targets = DataSiswa::where('kelas_id', $kelas)->get();
+
+    $this->sendWA($mapel, $tanggal, $targets);
     Alert::success('Sukses', 'Absen berhasil disimpan');
     return redirect()->back()->withInput();
 }
@@ -263,4 +275,73 @@ public function export_hadir(Request $request)
 
         return Excel::download(new AbsenExport($data), 'absen_' . $tanggal . $kelas . $mapel.'.xls',);
 }
+
+public function absen_manual(Request $request) {
+
+        $jadwal_id = $request->input('jadwal_id');
+        $tanggal = $request->input('tanggal');
+        $data = [];
+
+        if ($jadwal_id) {
+            $data = DataSiswa::join('jadwals', 'data_siswas.kelas_id', '=', 'jadwals.kelas_id')
+                ->leftJoin('absens', function ($join) use ($tanggal) {
+                    $join->on('data_siswas.id', '=', 'absens.siswa_id')
+                        ->where('absens.tanggal', '=', $tanggal);
+                })
+                ->where('jadwals.id', '=', $jadwal_id)
+                ->select('data_siswas.*', 'absens.status')
+                ->orderBy('data_siswas.nama')
+                ->get();
+        }
+
+
+        return view('admin.absen.index', [
+            'title' => 'Absen Siswa',
+            'class' => Kelas::all(),
+            'jadwals' => Jadwal::all(),
+            'data' => $data
+        ]);
+}
+
+    private function sendWA($mapel, $tanggal,  $targets){
+
+        $curl = curl_init();
+
+        $target_string = '';
+        foreach ($targets as $target) {
+            if (!empty($target['no_HP_ortu'])) {
+                $target_string .= $target['no_HP_ortu'].'|'.$target['nama'].', ';
+            }
+        }
+        $target_string = rtrim($target_string, ', ');
+
+        $message = "Halo,\n\nIni adalah pemberitahuan bahwa siswa {name} telah melakukan absensi untuk mata pelajaran ".$mapel->nama." pada tanggal ".$tanggal.".\n\nTerima kasih!";
+
+        $data = array(
+            'target' => $target_string,
+            'message' => $message,
+            'delay' => '2',
+            'countryCode' => '62',
+        );
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.fonnte.com/send',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $data,
+        CURLOPT_HTTPHEADER => array(
+            'Authorization: ' //change TOKEN to your actual token
+        ),
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        echo $response;
+    }
 }

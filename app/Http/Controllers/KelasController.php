@@ -50,7 +50,12 @@ class KelasController extends Controller
         $validatedData = $request->validate([
             'nama' => 'required|unique:kelas',
             'jurusan_id' => 'required',
-            'keterangan' => 'required|max:255'
+            'keterangan' => 'nullable|max:255'
+        ],[
+            'nama.required' => 'Kolom nama wajib diisi.',
+            'nama.unique' => 'Kelas sudah ada.',
+            'jurusan_id.required' => 'Kolom jurusan wajib diisi.',
+            'keterangan.max' => 'Kolom keterangan tidak boleh melebihi :max karakter.'
         ]);
 
         Kelas::create($validatedData);
@@ -88,14 +93,21 @@ class KelasController extends Controller
     {
         $rules = [
             'jurusan_id' => 'required',
-            'keterangan' => 'required|max:255'
+            'keterangan' => 'nullable|max:255'
         ];
 
         if($request->nama != $kela->nama){
             $rules['nama'] = 'required|unique:kelas';
         }
 
-        $validatedData = $request->validate($rules);
+        $messages = [
+            'nama.required' => 'Kolom nama wajib diisi.',
+            'nama.unique' => 'Kelas sudah ada.',
+            'jurusan_id.required' => 'Kolom jurusan wajib diisi.',
+            'keterangan.max' => 'Kolom keterangan tidak boleh melebihi :max karakter.'
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
 
 
         Kelas::where('id', $kela->id)->update($validatedData);

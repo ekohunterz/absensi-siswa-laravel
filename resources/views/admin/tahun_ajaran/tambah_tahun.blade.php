@@ -16,6 +16,9 @@
                         <input type="text" name="nama"
                             class="form-control border border-2 p-2 @error('nama') is-invalid @enderror" id="nama"
                             value="{{ old('nama') }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="keterangan">Keterangan:</label>
@@ -23,6 +26,9 @@
                             class="form-control border border-2 p-2 @error('keterangan') is-invalid @enderror"
                             id="keterangan" value="{{ old('keterangan') }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('keterangan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="exampleFormControlTextarea1" class="form-label">Semester</label>
@@ -41,7 +47,11 @@
                             <label class="form-check-label" for="semesterGenap">
                                 Genap
                             </label>
+                            @error('semester')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
+
                     </div>
                     <div class="mb-3 col-md-6">
                         <label for="exampleFormControlTextarea1" class="form-label">Status</label>
@@ -60,6 +70,9 @@
                             <label class="form-check-label" for="is_active">
                                 Tidak Aktif
                             </label>
+                            @error('is_active')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <div class="mb-3 col-md-12">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class UserController extends Controller
@@ -53,7 +54,19 @@ class UserController extends Controller
                 'email' => 'required',
                 'password' => 'same:nip',
                 'status' => 'required'
-            ]);
+            ], [
+                'required' => ':attribute wajib diisi.',
+                'max' => ':attribute maksimal :max karakter.',
+                'unique' => ':attribute sudah terdaftar.',
+            ], [
+                'nama' => 'Nama lengkap',
+                'nip' => 'NIP',
+                'alamat' => 'Alamat',
+                'no_HP' => 'Nomor HP',
+                'email' => 'Email',
+                'password' => 'Password',
+                'status' => 'Status']);
+
             $validatedData['role'] = '2';
             $validatedData['password'] = bcrypt($validatedData['nip']);
             User::create($validatedData);
@@ -100,7 +113,22 @@ class UserController extends Controller
             $rules['nip'] = 'required|unique:users|max:18';
         }
 
-        $validatedData = $request->validate($rules);
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'max' => ':attribute maksimal :max karakter.',
+            'unique' => ':attribute sudah terdaftar.',
+        ];
+
+        $attributes = [
+            'nama' => 'Nama',
+            'nip' => 'NIP',
+            'alamat' => 'Alamat',
+            'no_HP' => 'No. HP',
+            'email' => 'Email',
+            'status' => 'Status',
+        ];
+
+        $validatedData = $request->validate($rules, $messages, $attributes);
         User::where('id', $data_guru->id)->update($validatedData);
         Alert::success('Edit Guru', 'Guru berhasil diedit');
         return redirect('admin/data_guru');
@@ -111,12 +139,16 @@ class UserController extends Controller
      */
     public function destroy(User $data_guru)
     {
+        if($data_guru->foto){
+            Storage::delete('foto-profil/'.$data_guru->foto);
+        }
+
         User::destroy($data_guru->id);
         Alert::success('Hapus Guru', 'Guru berhasil dihapus');
         return redirect('admin/data_guru');
     }
 
-    public function profile(Request $request)
+    public function profile()
     {
     $user = auth()->user();
     $guru = User::where('id', $user->id)
@@ -129,24 +161,52 @@ class UserController extends Controller
     }
 
     public function update_profile(Request $request)
-    {
-        $user = auth()->user();
-        $data_guru = User::where('id', $user->id)
-                    ->first();
-        $rules = [
-                'nama' => 'required|max:255',
-                'alamat' => 'required|max:255',
-                'no_HP' => 'required',
-                'email' => 'required'
-        ];
+{
+    $user = auth()->user();
 
-        if($request->nip != $data_guru->nip){
-            $rules['nip'] = 'required|unique:users|max:18';
+    $rules = [
+        'nama' => 'required|max:255',
+        'alamat' => 'required|max:255',
+        'no_HP' => 'required',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'foto' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // tambahkan validasi untuk file foto
+    ];
+
+    $messages = [
+        'required' => ':attribute wajib diisi.',
+        'max' => ':attribute maksimal :max karakter.',
+        'email' => ':attribute harus berupa email.',
+        'unique' => ':attribute telah digunakan oleh pengguna lain.',
+        'image' => ':attribute harus berupa gambar.',
+        'mimes' => ':attribute harus berupa file dengan tipe: :values.',
+        'max' => ':attribute maksimal :max KB.',
+    ];
+
+    $attributes = [
+        'nama' => 'Nama',
+        'alamat' => 'Alamat',
+        'no_HP' => 'No. HP',
+        'email' => 'Email',
+        'foto' => 'Foto Profil'
+    ];
+
+
+    $validatedData = $request->validate($rules, $messages, $attributes);
+
+    if ($request->hasFile('foto')) {
+        $file = $request->file('foto');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->storeAs('foto-profil', $fileName);
+        $validatedData['foto'] = $fileName;
+
+        if($user->foto){
+            Storage::delete('foto-profil/'.$user->foto);
         }
-
-        $validatedData = $request->validate($rules);
-        User::where('id', $user->id)->update($validatedData);
-        Alert::success('Edit Profile', 'Profile berhasil diedit');
-        return redirect('profile');
     }
+
+    User::where('id', $user->id)->update($validatedData);
+
+    Alert::success('Edit Profile', 'Profile berhasil diedit');
+    return redirect('profile');
+}
 }

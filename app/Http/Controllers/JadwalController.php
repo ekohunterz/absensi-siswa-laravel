@@ -109,6 +109,15 @@ class JadwalController extends Controller
             'jam_mulai' => 'required',
             'jam_selesai' => 'required',
             'keterangan' => 'required'
+        ], [
+            'kelas_id.required' => 'Kelas harus diisi.',
+            'mapel_id.required' => 'Mata pelajaran harus diisi.',
+            'user_id.required' => 'Guru pengajar harus diisi.',
+            'tahun_ajaran_id.required' => 'Tahun ajaran harus diisi.',
+            'hari.required' => 'Hari harus diisi.',
+            'jam_mulai.required' => 'Jam mulai harus diisi.',
+            'jam_selesai.required' => 'Jam selesai harus diisi.',
+            'keterangan.required' => 'Keterangan harus diisi.'
         ]);
         Jadwal::create($validatedData);
         Alert::success('Tambah Jadwal', 'Jadwal Berhasil ditambah');
@@ -133,10 +142,17 @@ class JadwalController extends Controller
     public function edit(Jadwal $jadwal)
     {
         $this->authorize('admin');
+        $kelas = $jadwal->kelas_id;
+        $mapels = Mapel::where(function ($query) use ($kelas) {
+            $query->where('jurusan_id', function ($query) use ($kelas) {
+                $query->select('jurusan_id')->from('kelas')->where('id', $kelas);
+            })->orWhereNull('jurusan_id');
+        })->get();
+
         return view('admin.jadwal.edit_jadwal', [
             'title' => 'Data Jadwal | Edit Jadwal',
             'data_jadwal' => $jadwal,
-            'data_mapel' => Mapel::all(),
+            'data_mapel' => $mapels,
             'data_user' => User::all(),
             'data_tahun' => TahunAjaran::all(),
             'data_kelas' => Kelas::all(),
@@ -159,6 +175,15 @@ class JadwalController extends Controller
             'jam_mulai' => 'required',
             'jam_selesai' => 'required',
             'keterangan' => 'required'
+        ], [
+            'kelas_id.required' => 'Kelas harus diisi.',
+            'mapel_id.required' => 'Mata pelajaran harus diisi.',
+            'user_id.required' => 'Guru pengajar harus diisi.',
+            'tahun_ajaran_id.required' => 'Tahun ajaran harus diisi.',
+            'hari.required' => 'Hari harus diisi.',
+            'jam_mulai.required' => 'Jam mulai harus diisi.',
+            'jam_selesai.required' => 'Jam selesai harus diisi.',
+            'keterangan.required' => 'Keterangan harus diisi.'
         ]);
 
 
@@ -176,5 +201,12 @@ class JadwalController extends Controller
         Jadwal::destroy($jadwal->id);
         Alert::success('Hapus Jadwal', 'Jadwal Berhasil dihapus');
         return redirect('jadwal');
+    }
+
+    public function getJadwalByKelas($id)
+    {
+        $mapels = Jadwal::join('mapels', 'jadwals.mapel_id', '=', 'mapels.id')->where('jadwals.kelas_id', $id)
+                ->select('mapels.nama', 'jadwals.id', 'jadwals.hari')->get();
+        return response()->json($mapels);
     }
 }

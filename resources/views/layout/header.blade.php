@@ -34,21 +34,48 @@
                 <li class="nav-item dropdown pe-2 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton"
                         data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="/assets/img/team-2.jpg" alt="Foto Profil" class="rounded-circle me-sm-1"
-                            width="25" height="25">
+                        @if (Auth()->user()->foto)
+                            <img src="{{ asset('storage/foto-profil/' . Auth()->user()->foto) }}" alt="Foto Profil"
+                                class="rounded-circle me-sm-1" width="25" height="25"
+                                style="object-fit: cover;object-position: center;">
+                        @else
+                            <img src="/assets/img/team-2.jpg" alt="Foto Profil" class="rounded-circle me-sm-1"
+                                width="25" height="25" style="object-fit: cover;object-position: center;">
+                        @endif
                         <span class="d-sm-inline d-none">{{ Auth()->user()->nama }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end py-1">
-                        <li>
-                            <a href="#" class="dropdown-item"><i class="fa fa-user me-2"></i> Lihat Profil</a>
+                        <li><a href="/profile" class="dropdown-item py-2">
+                                <div class="d-flex align-items-center">
+                                    @if (Auth()->user()->foto)
+                                        <img src="{{ asset('storage/foto-profil/' . auth()->user()->foto) }}"
+                                            class="rounded-circle me-2" width="50" height="50"
+                                            style="object-fit: cover;object-position: center;">
+                                    @else
+                                        <img src="/assets/img/team-2.jpg" class="rounded-circle me-2" width="50"
+                                            height="50" style="object-fit: cover;object-position: center;">
+                                    @endif
+                                    <div class="wrap-text">
+                                        <h6 class="mb-0">{{ auth()->user()->nama }}</h6>
+                                        <span class="text-muted text-small">
+                                            @if (auth()->user()->role == 1)
+                                                Admin
+                                            @else
+                                                Guru
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
                         </li>
                         <li>
-                            <hr class="dropdown-divider">
+                            <a href="/ubah_pass" class="dropdown-item py-2"><i class="fa fa-lock me-2"></i> Ubah
+                                Password</a>
                         </li>
                         <li>
                             <form action="/logout" method="post">
                                 @csrf
-                                <button type="submit" class="dropdown-item"><i class="fa fa-sign-out me-2"></i>
+                                <button type="submit" class="dropdown-item py-2"><i class="fa fa-sign-out me-2"></i>
                                     Logout</button>
                             </form>
                         </li>

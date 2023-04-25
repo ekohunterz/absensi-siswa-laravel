@@ -26,7 +26,7 @@
                     <div class="card-header p-3 pt-2">
                         <div
                             class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="material-icons opacity-10">person</i>
+                            <i class="material-icons opacity-10">school</i>
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Guru</p>
@@ -44,7 +44,7 @@
                     <div class="card-header p-3 pt-2">
                         <div
                             class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="material-icons opacity-10">home</i>
+                            <i class="material-icons opacity-10">business</i>
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Total Kelas</p>
@@ -62,7 +62,7 @@
                     <div class="card-header p-3 pt-2">
                         <div
                             class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                            <i class="material-icons opacity-10">weekend</i>
+                            <i class="material-icons opacity-10">handyman</i>
                         </div>
                         <div class="text-end pt-1">
                             <p class="text-sm mb-0 text-capitalize">Data Jurusan</p>
@@ -281,35 +281,35 @@
             </div>
         </div>
     </div>
+    <script>
+        function displayTime() {
+            var currentTime = new Date();
+            var date = currentTime.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            var hours = currentTime.getHours();
+            var minutes = currentTime.getMinutes();
+            var seconds = currentTime.getSeconds();
+
+            // tambahkan angka 0 di depan bilangan < 10
+            hours = (hours < 10 ? "0" : "") + hours;
+            minutes = (minutes < 10 ? "0" : "") + minutes;
+            seconds = (seconds < 10 ? "0" : "") + seconds;
+
+            // tampilkan waktu dalam format hh:mm:ss
+            var timeString = hours + ":" + minutes + ":" + seconds;
+
+            // tampilkan waktu di dalam span dengan id "clock"
+            document.getElementById("date").innerHTML = date;
+            document.getElementById("clock").innerHTML = timeString;
+
+        }
+
+        // panggil fungsi displayTime() setiap 1 detik
+        setInterval(displayTime, 1000);
+    </script>
+
 @endsection
-
-<script>
-    function displayTime() {
-        var currentTime = new Date();
-        var date = currentTime.toLocaleDateString('id-ID', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        var hours = currentTime.getHours();
-        var minutes = currentTime.getMinutes();
-        var seconds = currentTime.getSeconds();
-
-        // tambahkan angka 0 di depan bilangan < 10
-        hours = (hours < 10 ? "0" : "") + hours;
-        minutes = (minutes < 10 ? "0" : "") + minutes;
-        seconds = (seconds < 10 ? "0" : "") + seconds;
-
-        // tampilkan waktu dalam format hh:mm:ss
-        var timeString = hours + ":" + minutes + ":" + seconds;
-
-        // tampilkan waktu di dalam span dengan id "clock"
-        document.getElementById("date").innerHTML = date;
-        document.getElementById("clock").innerHTML = timeString;
-
-    }
-
-    // panggil fungsi displayTime() setiap 1 detik
-    setInterval(displayTime, 1000);
-</script>

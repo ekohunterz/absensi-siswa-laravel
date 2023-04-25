@@ -18,6 +18,9 @@
                             class="form-control border border-2 p-2 @error('nama') is-invalid @enderror" id="nama"
                             value="{{ old('nama', $data_mapel->nama) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="alamat">Keterangan:</label>
@@ -25,6 +28,9 @@
                             class="form-control border border-2 p-2 @error('keterangan') is-invalid @enderror"
                             id="keterangan" value="{{ old('nama', $data_mapel->keterangan) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('keterangan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-12">
                         <label class="form-label" for="kode">Jurusan:</label>
@@ -43,12 +49,14 @@
                         </select>
                         <div class="form-check p-0">
                             <input class="form-check-input" type="checkbox" value="" id="mapel_umum"
-                                {{ empty($data_mapel->jurusan_id) ? 'checked' : '' }}
-                                onchange="document.getElementById('jurusan_id').selectedIndex = 0; this.checked;">
+                                {{ empty($data_mapel->jurusan_id) ? 'checked' : '' }} onchange="toggleJurusan()">
                             <label class="form-check-label" for="mapel_umum">
                                 Semua Jurusan
                             </label>
                         </div>
+                        @error('jurusan_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary mb-3">Update</button>
@@ -57,4 +65,19 @@
             </form>
         </div>
     </div>
+    <script>
+        function toggleJurusan() {
+            var checkBox = document.getElementById("mapel_umum");
+            var jurusanSelect = document.getElementById("jurusan_id");
+
+            if (checkBox.checked == true) {
+                jurusanSelect.selectedIndex = 0;
+                jurusanSelect.options[0].text = "Semua Jurusan";
+                jurusanSelect.disabled = true;
+            } else {
+                jurusanSelect.options[0].text = "Pilih Jurusan";
+                jurusanSelect.disabled = false;
+            }
+        }
+    </script>
 @endsection

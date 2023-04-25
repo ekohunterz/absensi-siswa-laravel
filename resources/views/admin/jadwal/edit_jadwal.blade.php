@@ -26,6 +26,9 @@
                                 @endif
                             @endforeach
                         </select>
+                        @error('kelas_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="mapel_id">Mapel:</label>
@@ -41,6 +44,9 @@
                                 @endif
                             @endforeach
                         </select>
+                        @error('mapel_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="user_id">Guru:</label>
@@ -56,6 +62,9 @@
                                 @endif
                             @endforeach
                         </select>
+                        @error('user_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="tahun_ajaran_id">Tahun Ajaran:</label>
@@ -74,6 +83,9 @@
                                 @endif
                             @endforeach
                         </select>
+                        @error('tahun_ajaran_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="mb-3 col-md-6">
@@ -82,6 +94,9 @@
                             class="form-control border border-2 p-2 @error('jam_mulai') is-invalid @enderror" id="jam_mulai"
                             value="{{ old('jam_mulai', $data_jadwal->jam_mulai) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('jam_mulai')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="jam_selesai">Jam Selesai:</label>
@@ -89,6 +104,9 @@
                             class="form-control border border-2 p-2 @error('jam_selesai') is-invalid @enderror"
                             id="jam_selesai" value="{{ old('jam_selesai', $data_jadwal->jam_selesai) }}"
                             onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('jam_selesai')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="hari">Hari:</label>
@@ -103,6 +121,9 @@
                                 @endif
                             @endforeach
                         </select>
+                        @error('hari')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="keterangan">Keterangan:</label>
@@ -110,6 +131,9 @@
                             class="form-control border border-2 p-2 @error('keterangan') is-invalid @enderror"
                             id="keterangan" value="{{ old('keterangan', $data_jadwal->keterangan) }}"
                             onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('keterangan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary mb-3">Update</button>
@@ -118,4 +142,30 @@
             </form>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $('#kelas_id').on('change', function() {
+                var kelas_id = $(this).val();
+                if (kelas_id) {
+                    $.ajax({
+                        url: '/mapel/' + kelas_id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            $('#mapel_id').empty();
+                            $('#mapel_id').append(
+                                '<option value="" hidden>Pilih Mata Pelajaran</option>');
+                            $.each(data, function(key, value) {
+                                $('#mapel_id').append('<option value="' + value.id +
+                                    '">' + value.nama + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#mapel_id').empty();
+                    $('#mapel_id').append('<option value="" hidden>Pilih Mapel</option>');
+                }
+            });
+        });
+    </script>
 @endsection

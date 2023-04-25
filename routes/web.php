@@ -36,6 +36,7 @@ Route::get('/login', [LoginController::class, 'index'])->name('login')->middlewa
 Route::post('/login', [LoginController::class, 'auth']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/guru/absen', [AbsenController::class, 'index'])->middleware('auth');
+Route::get('/admin/absen', [AbsenController::class, 'absen_manual'])->middleware('admin');
 Route::get('/data_absen', [AbsenController::class, 'data_absen'])->middleware('auth');
 Route::post('/data_absen/update', [AbsenController::class, 'update'])->middleware('auth');
 Route::get('/data_rekap', [AbsenController::class, 'data_rekap'])->middleware('auth');
@@ -44,5 +45,6 @@ Route::get('/guru/data_rekap/export', [AbsenController::class, 'export'])->middl
 Route::get('/guru/data_absen/export', [AbsenController::class, 'export_hadir'])->middleware('auth');
 Route::get('/profile', [UserController::class, 'profile'])->middleware('auth');
 Route::post('/profile/update', [UserController::class, 'update_profile'])->middleware('auth');
-
+Route::get('/mapel/{id}', [MapelController::class, 'getMapelByJurusan']);
+Route::get('/getjadwal/{id}', [JadwalController::class, 'getJadwalByKelas']);
 

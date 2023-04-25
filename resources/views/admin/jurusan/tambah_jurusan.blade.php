@@ -16,12 +16,18 @@
                         <input type="text" name="nama"
                             class="form-control border border-2 p-2 @error('nama') is-invalid @enderror" id="nama"
                             value="{{ old('nama') }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="kode">Kode Jurusan:</label>
                         <input type="text" name="kode"
                             class="form-control border border-2 p-2 @error('kode') is-invalid @enderror" id="kode"
                             value="{{ old('kode') }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('kode')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-12">
                         <label class="form-label" for="alamat">Keterangan:</label>
@@ -29,6 +35,9 @@
                             class="form-control border border-2 p-2 @error('keterangan') is-invalid @enderror"
                             id="keterangan" value="{{ old('keterangan') }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('keterangan')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary mb-3">Tambah</button>

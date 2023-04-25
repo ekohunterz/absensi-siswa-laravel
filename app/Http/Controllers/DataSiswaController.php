@@ -71,6 +71,16 @@ class DataSiswaController extends Controller
             'alamat' => 'required|max:255',
             'no_HP' => 'required',
             'kelas_id' => 'required'
+        ], [
+            'required' => ':attribute wajib diisi.',
+            'max' => ':attribute maksimal :max karakter.',
+            'unique' => ':attribute sudah terdaftar.',
+        ],[
+            'nama' => 'Nama',
+            'nisn' => 'NISN',
+            'alamat' => 'Alamat',
+            'no_HP' => 'No. HP',
+            'kelas_id' => 'Kelas'
         ]);
 
         DataSiswa::create($validatedData);
@@ -134,8 +144,22 @@ class DataSiswaController extends Controller
             $rules['nisn'] = 'required|unique:data_siswas|max:10';
         }
 
-        $validatedData = $request->validate($rules);
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'max' => ':attribute maksimal :max karakter.',
+            'unique' => ':attribute sudah terdaftar.',
+        ];
 
+        $attributes = [
+            'nama' => 'Nama',
+            'nisn' => 'NISN',
+            'alamat' => 'Alamat',
+            'no_HP' => 'No. HP',
+            'kelas_id' => 'Kelas'
+        ];
+
+
+        $validatedData = $request->validate($rules, $messages, $attributes);
 
         DataSiswa::where('id', $dataSiswa->id)->update($validatedData);
         Alert::success('Edit Siswa', 'Siswa Berhasil diedit');

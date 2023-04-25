@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('mapels', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
-            $table->foreignId('jurusan_id');
+            $table->foreignId('jurusan_id')->nullable();
             $table->string('keterangan')->nullable();
             $table->timestamps();
         });

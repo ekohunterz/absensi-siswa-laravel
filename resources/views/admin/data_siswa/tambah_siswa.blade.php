@@ -16,24 +16,36 @@
                         <input type="text" name="nama"
                             class="form-control border border-2 p-2 @error('nama') is-invalid @enderror" id="nama"
                             value="{{ old('nama') }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="nisn">NISN:</label>
                         <input type="text" name="nisn"
-                            class="form-control border border-2 p-2 @error('nisn') is-invalid @enderror" id="nisn"
+                            class="form-control border border-2 p-2 @error('nisn') is-invalid  @enderror" id="nisn"
                             value="{{ old('nisn') }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('nisn')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="alamat">Alamat:</label>
                         <input type="text" name="alamat"
                             class="form-control border border-2 p-2 @error('alamat') is-invalid @enderror" id="alamat"
                             value="{{ old('alamat') }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('alamat')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="no_HP">No.HP:</label>
                         <input type="text" name="no_HP"
                             class="form-control border border-2 p-2 @error('no_HP') is-invalid @enderror" id="no_HP"
                             value="{{ old('no_HP') }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('no_HP')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-12">
                         <label class="form-label" for="kelas_id">Kelas:</label>
@@ -49,6 +61,9 @@
                                 @endif
                             @endforeach
                         </select>
+                        @error('kelas_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-primary mb-3">Tambah</button>

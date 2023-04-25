@@ -53,6 +53,9 @@
                                 </button>
                             @endif
                         </div>
+                        <div class="col-md-3 text-end  align-self-end">
+                            <a href="/admin/absen" type="button" class="btn btn-primary"><i class="fa fa-plus"></i></a>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -213,4 +216,30 @@
             });
         </script>
     @endif
+    <script>
+        $(document).ready(function() {
+            $('#kelas_id').on('change', function() {
+                var kelas_id = $(this).val();
+                if (kelas_id) {
+                    $.ajax({
+                        url: '/mapel/' + kelas_id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            $('#mapel_id').empty();
+                            $('#mapel_id').append(
+                                '<option value="" hidden>Pilih Mapel</option>');
+                            $.each(data, function(key, value) {
+                                $('#mapel_id').append('<option value="' + value.id +
+                                    '">' + value.nama + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#mapel_id').empty();
+                    $('#mapel_id').append('<option value="" hidden>Pilih Mapel</option>');
+                }
+            });
+        });
+    </script>
 @endsection

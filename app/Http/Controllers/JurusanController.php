@@ -39,17 +39,21 @@ class JurusanController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'nama' => 'required',
-            'kode' => 'required|unique:jurusans',
-            'keterangan' => 'required|max:255'
-        ]);
+{
+    $validatedData = $request->validate([
+        'nama' => 'required|max:255',
+        'kode' => 'required|max:10',
+        'keterangan' => 'required|max:255'
+    ], [
+        'required' => 'Kolom :attribute wajib diisi.',
+        'max' => 'Kolom :attribute tidak boleh melebihi :max karakter.',
+        'unique' => ':attribute sudah terdaftar untuk jurusan ini.'
+    ]);
 
-        Jurusan::create($validatedData);
-        Alert::success('Tambah Jurusan', 'Jurusan Berhasil Ditambah');
-        return redirect('admin/jurusan');
-    }
+    Jurusan::create($validatedData);
+    Alert::success('Tambah Jurusan', 'Jurusan Berhasil Ditambah');
+    return redirect('admin/jurusan');
+}
 
     /**
      * Display the specified resource.
@@ -87,7 +91,13 @@ class JurusanController extends Controller
             $rules['kode'] = 'required|unique:jurusans';
         }
 
-        $validatedData = $request->validate($rules);
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'max' => ':attribute maksimal :max karakter.',
+            'unique' => ':attribute sudah terdaftar.',
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
 
 
         Jurusan::where('id', $jurusan->id)->update($validatedData);

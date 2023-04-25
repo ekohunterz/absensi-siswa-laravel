@@ -45,6 +45,14 @@ class TahunAjaranController extends Controller
             'semester' => 'required',
             'keterangan' => 'required|max:255',
             'is_active' => 'required'
+        ],[
+            'required' => ':attribute wajib diisi.',
+            'max' => ':attribute maksimal :max karakter.'
+        ],[
+            'nama' => 'Nama Tahun Ajaran',
+            'semester' => 'Semester',
+            'keterangan' => 'Keterangan',
+            'is_active' => 'Status'
         ]);
 
         TahunAjaran::create($validatedData);
@@ -86,8 +94,17 @@ class TahunAjaranController extends Controller
             'is_active' => 'required'
         ];
 
-        $validatedData = $request->validate($rules);
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'max' => ':attribute maksimal :max karakter.'
+        ];
 
+        $validatedData = $request->validate($rules, $messages, [
+            'nama' => 'Nama Tahun Ajaran',
+            'semester' => 'Semester',
+            'keterangan' => 'Keterangan',
+            'is_active' => 'Status'
+        ]);
 
         TahunAjaran::where('id', $tahunAjaran->id)->update($validatedData);
         Alert::success('Edit Tahun Ajaran', 'Tahun Ajaran berhasil diedit');

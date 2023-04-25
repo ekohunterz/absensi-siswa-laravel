@@ -18,12 +18,18 @@
                             class="form-control border border-2 p-2 @error('nama') is-invalid @enderror" id="nama"
                             value="{{ old('nama', $data_guru->nama) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('nama')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="nip">NIP:</label>
                         <input type="text" name="nip"
                             class="form-control border border-2 p-2 @error('nip') is-invalid @enderror" id="nip"
                             value="{{ old('nip', $data_guru->nip) }}" onfocus="focused(this)" onfocusout="defocused(this)">
+                        @error('nip')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="alamat">Alamat:</label>
@@ -31,6 +37,9 @@
                             class="form-control border border-2 p-2 @error('alamat') is-invalid @enderror" id="alamat"
                             value="{{ old('alamat', $data_guru->alamat) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('alamat')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="no_HP">No.HP:</label>
@@ -38,6 +47,9 @@
                             class="form-control border border-2 p-2 @error('no_HP') is-invalid @enderror" id="no_HP"
                             value="{{ old('no_HP', $data_guru->no_HP) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('no_HP')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-6">
                         <label class="form-label" for="email">Email:</label>
@@ -45,6 +57,9 @@
                             class="form-control border border-2 p-2 @error('email') is-invalid @enderror" id="email"
                             value="{{ old('email', $data_guru->email) }}" onfocus="focused(this)"
                             onfocusout="defocused(this)">
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-12">
                         <label for="exampleFormControlTextarea1" class="form-label">Status</label>
@@ -64,6 +79,9 @@
                                 Honorer
                             </label>
                         </div>
+                        @error('status')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3 col-md-12">
                         <button type="submit" class="btn btn-primary mb-3">Update</button>

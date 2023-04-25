@@ -51,6 +51,10 @@ class MapelController extends Controller
             'nama' => 'required',
             'jurusan_id' => 'required_if:mapel_umum,false',
             'keterangan' => 'nullable|max:255'
+        ],[
+            'nama.required' => 'Kolom nama wajib diisi.',
+            'jurusan_id.required_if' => 'Kolom jurusan wajib diisi jika mapel umum tidak dicentang.',
+            'keterangan.max' => 'Kolom keterangan tidak boleh melebihi :max karakter.'
         ]);
 
         Mapel::create($validatedData);
@@ -92,7 +96,13 @@ class MapelController extends Controller
             'keterangan' => 'nullable|max:255'
         ];
 
-        $validatedData = $request->validate($rules);
+        $messages = [
+            'nama.required' => 'Kolom nama wajib diisi.',
+            'jurusan_id.required_if' => 'Kolom jurusan wajib diisi jika mapel umum tidak dicentang.',
+            'keterangan.max' => 'Kolom keterangan tidak boleh melebihi :max karakter.'
+        ];
+
+        $validatedData = $request->validate($rules, $messages);
 
 
         Mapel::where('id', $mapel->id)->update($validatedData);
@@ -109,4 +119,16 @@ class MapelController extends Controller
         Alert::success('Hapus Mata Pelajaran', 'Mata Pelajaran berhasil dihapus');
         return redirect('admin/mapel');
     }
+
+    public function getMapelByJurusan($id)
+    {
+        $mapels = Mapel::where(function ($query) use ($id) {
+            $query->where('jurusan_id', function ($query) use ($id) {
+                $query->select('jurusan_id')->from('kelas')->where('id', $id);
+            })->orWhereNull('jurusan_id');
+        })->get();
+
+        return response()->json($mapels);
+    }
+
 }

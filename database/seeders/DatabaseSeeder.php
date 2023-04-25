@@ -12,6 +12,7 @@ use App\Models\Mapel;
 use App\Models\TahunAjaran;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,6 +32,18 @@ class DatabaseSeeder extends Seeder
             'nama' => 'Teknik Instalasi Tenaga Listrik',
             'kode' => 'TITL',
             'keterangan' => 'Listrik'
+        ]);
+
+        User::create([
+            'nip' => fake()->unique()->nik(),
+            'nama' => 'Admin',
+            'email' => fake()->unique()->email(),
+            'alamat' => fake()->address(),
+            'no_HP' => fake()->phoneNumber(),
+            'status' => 'PNS',
+            'role' => 1,
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
         ]);
 
         Mapel::create([

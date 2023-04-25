@@ -202,4 +202,30 @@
             </div>
         </div>
     @endif
+    <script>
+        $(document).ready(function() {
+            $('#kelas_id').on('change', function() {
+                var kelas_id = $(this).val();
+                if (kelas_id) {
+                    $.ajax({
+                        url: '/mapel/' + kelas_id,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data) {
+                            $('#mapel_id').empty();
+                            $('#mapel_id').append(
+                                '<option value="" hidden>Pilih Mapel</option>');
+                            $.each(data, function(key, value) {
+                                $('#mapel_id').append('<option value="' + value.id +
+                                    '">' + value.nama + '</option>');
+                            });
+                        }
+                    });
+                } else {
+                    $('#mapel_id').empty();
+                    $('#mapel_id').append('<option value="" hidden>Pilih Mapel</option>');
+                }
+            });
+        });
+    </script>
 @endsection
