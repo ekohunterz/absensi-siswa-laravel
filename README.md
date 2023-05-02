@@ -1,37 +1,3 @@
-Tutor Instal:
-
-Clone repository dari GitHub:
-
-git clone https://github.com/ekohunterz/absensi-siswa-laravel.git
-
-Masuk ke folder project dan jalankan perintah composer install untuk mengunduh semua dependensi yang diperlukan:
-cd absensi-siswa-laravel
-composer install
-
-Buat file .env baru dari file .env.example:
-cp .env.example .env
-
-
-Generate app key baru:
-php artisan key:generate
-
-
-Buat database kosong dengan nama yang telah ditentukan di file .env, dan pastikan untuk mengisi informasi database pada file .env:
-DB_DATABASE=nama_database
-DB_USERNAME=username_database
-DB_PASSWORD=password_database
-
-
-Jalankan migrasi database:
-php artisan migrate
-
-Jalankan aplikasi dengan perintah:
-php artisan serve
-
-Buka browser dan akses http://localhost:8000 (atau sesuai dengan port yang Anda atur) untuk mengakses aplikasi.
-
-Demikian cara instalasi project "absensi-siswa-laravel" dari GitHub.
-
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
