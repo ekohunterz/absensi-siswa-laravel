@@ -21,7 +21,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     <title>
-        Material Dashboard 2 by Creative Tim
+        {{ $title }}
     </title>
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css"
@@ -58,23 +58,25 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                @if (session('successMsg'))
+                                    <div class="alert alert-success" role="alert">
+                                        <span class="text-white">{{ session('successMsg') }}</span>
+                                    </div>
+                                @endif
+                                @if (session('loginError'))
+                                    <div class="alert alert-danger" role="alert">
+                                        <span class="text-white"> {{ session('loginError') }}</span>
+                                    </div>
+                                @endif
                                 <form class="text-start" action="/login" method="post">
                                     @csrf
                                     <div class="input-group input-group-outline my-3">
                                         <label class="form-label">Email atau NIP</label>
-                                        <input type="text" name="email"
-                                            class="form-control @error('email') is-invalid @enderror"
-                                            id="floatingInput">
-                                        @error('email')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                        @enderror
+                                        <input type="text" name="email" class="form-control" id="floatingInput">
                                     </div>
                                     <div class="input-group input-group-outline mb-3">
                                         <label class="form-label">Password</label>
-                                        <input type="password" name="password"
-                                            class="form-control @error('password') is-invalid @enderror"
+                                        <input type="password" name="password" class="form-control"
                                             id="floatingPassword">
                                     </div>
                                     <div class="text-center">
@@ -150,7 +152,7 @@
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-    <script src="../assets/js/material-dashboard.min.js?v=3.0.5"></script>
+    <script src="/assets/js/material-dashboard.min.js?v=3.0.5"></script>
 </body>
 
 </html>

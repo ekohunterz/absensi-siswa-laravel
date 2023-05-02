@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             'alamat' => fake()->address(),
             'no_HP' => fake()->phoneNumber(),
             'status' => 'PNS',
+            'tgl_lahir' => '1999-10-12',
             'role' => 1,
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),

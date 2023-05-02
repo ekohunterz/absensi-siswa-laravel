@@ -45,28 +45,27 @@
                         <span class="d-sm-inline d-none">{{ Auth()->user()->nama }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end py-1">
-                        <li><a href="/profile" class="dropdown-item py-2">
-                                <div class="d-flex align-items-center">
-                                    @if (Auth()->user()->foto)
-                                        <img src="{{ asset('storage/foto-profil/' . auth()->user()->foto) }}"
-                                            class="rounded-circle me-2" width="50" height="50"
-                                            style="object-fit: cover;object-position: center;">
-                                    @else
-                                        <img src="/assets/img/team-2.jpg" class="rounded-circle me-2" width="50"
-                                            height="50" style="object-fit: cover;object-position: center;">
-                                    @endif
-                                    <div class="wrap-text">
-                                        <h6 class="mb-0">{{ auth()->user()->nama }}</h6>
+                        <li>
+                            <a href="/profile" class="dropdown-item py-2">
+                                <div class="d-flex flex-column align-items-center">
+                                    <img src="{{ asset('storage/foto-profil/' . auth()->user()->foto) }}"
+                                        class="rounded-circle me-2 order-1" width="50" height="50"
+                                        style="object-fit: cover; object-position: center;">
+                                    <div class="wrap-text text-center order-2">
+                                        <h6 class="mb-0 text-wrap">{{ auth()->user()->nama }}</h6>
                                         <span class="text-muted text-small">
                                             @if (auth()->user()->role == 1)
                                                 Admin
                                             @else
-                                                Guru
+                                                Guru - {{ auth()->user()->nip }}
                                             @endif
                                         </span>
                                     </div>
                                 </div>
                             </a>
+                        </li>
+                        <li>
+                            <hr class="dark horizontal my-1">
                         </li>
                         <li>
                             <a href="/ubah_pass" class="dropdown-item py-2"><i class="fa fa-lock me-2"></i> Ubah

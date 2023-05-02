@@ -19,7 +19,8 @@ class TahunAjaranFactory extends Factory
         return [
             'nama' => '2022/2023',
             'semester' => 'Genap',
-            'keterangan' => '2022/2023 Genap'
+            'keterangan' => '2022/2023 Genap',
+            'is_active' => 1
         ];
     }
 }

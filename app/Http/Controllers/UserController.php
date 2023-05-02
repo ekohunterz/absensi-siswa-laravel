@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -161,7 +162,7 @@ class UserController extends Controller
     }
 
     public function update_profile(Request $request)
-{
+    {
     $user = auth()->user();
 
     $rules = [
@@ -169,6 +170,7 @@ class UserController extends Controller
         'alamat' => 'required|max:255',
         'no_HP' => 'required',
         'email' => 'required|email|unique:users,email,' . $user->id,
+        'tgl_lahir' => 'required',
         'foto' => 'image|mimes:jpeg,png,jpg,gif|max:2048' // tambahkan validasi untuk file foto
     ];
 
@@ -186,6 +188,7 @@ class UserController extends Controller
         'nama' => 'Nama',
         'alamat' => 'Alamat',
         'no_HP' => 'No. HP',
+        'tgl_lahir' => 'Tanggal Lahir',
         'email' => 'Email',
         'foto' => 'Foto Profil'
     ];
@@ -208,5 +211,43 @@ class UserController extends Controller
 
     Alert::success('Edit Profile', 'Profile berhasil diedit');
     return redirect('profile');
+    }
+
+    public function ubah_pass()
+    {
+    return view('dashboard.change-password', [
+        'title' => 'Ubah Password'
+    ]);
+    }
+
+    public function changePassword(Request $request)
+{
+    $this->validate($request, [
+        'old_password' => 'required',
+        'password' => 'required|min:6|confirmed',
+    ],
+    [
+        'required' => ':attribute wajib diisi.',
+        'min' => ':attribute minimal :min karakter.',
+    ],[
+
+        'password' => 'Password',
+        'old_password' => 'Password Lama',
+    ]);
+
+    $user = Auth::user();
+    $hashedPassword = $user->password;
+
+    if (Hash::check($request->old_password, $hashedPassword)) {
+        $user->fill([
+            'password' => Hash::make($request->password)
+        ])->save();
+
+        Auth::logout();
+
+        return redirect()->route('login')->with('successMsg', 'Password berhasil diubah, silakan login kembali.');
+    }
+
+    return back()->withErrors(['old_password' => 'Password lama salah!!.']);
 }
 }

@@ -47,4 +47,6 @@ Route::get('/profile', [UserController::class, 'profile'])->middleware('auth');
 Route::post('/profile/update', [UserController::class, 'update_profile'])->middleware('auth');
 Route::get('/mapel/{id}', [MapelController::class, 'getMapelByJurusan']);
 Route::get('/getjadwal/{id}', [JadwalController::class, 'getJadwalByKelas']);
+Route::get('/ubah_pass', [UserController::class, 'ubah_pass'])->middleware('auth');
+Route::post('/ubah_pass', [UserController::class, 'changePassword'])->middleware('auth');
 

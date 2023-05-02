@@ -24,6 +24,7 @@ class UserFactory extends Factory
             'alamat' => fake()->address(),
             'no_HP' => fake()->phoneNumber(),
             'status' => 'PNS',
+            'tgl_lahir' => fake()->date('Y-m-d'),
             'role' => fake()->numberBetween(1, 2),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),

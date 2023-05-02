@@ -335,7 +335,7 @@ public function absen_manual(Request $request) {
         CURLOPT_CUSTOMREQUEST => 'POST',
         CURLOPT_POSTFIELDS => $data,
         CURLOPT_HTTPHEADER => array(
-            'Authorization: ' //change TOKEN to your actual token
+            'Authorization: Jzj90kiUthh@SdF!iC3z' //change TOKEN to your actual token
         ),
         ));
 

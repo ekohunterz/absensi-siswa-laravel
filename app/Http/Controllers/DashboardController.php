@@ -23,12 +23,20 @@ class DashboardController extends Controller
 
         $jadwal_now = Jadwal::with('kelas', 'mapel', 'user', 'tahun_ajaran')->where('hari', '=', $hari_ini)
                             ->where('user_id', '=', $user_id)
+                            ->where('is_active', true)
                             ->whereTime('jam_mulai', '>=', $now)
                             ->whereTime('jam_selesai', '<=', $now)
+                            ->whereHas('tahun_ajaran', function($query) {
+                                $query->where('is_active', true);
+                            })
                             ->first();
 
         $jadwal_all = Jadwal::with('kelas', 'mapel', 'user', 'tahun_ajaran')
                             ->where('hari', '=', $hari_ini)
+                            ->where('is_active', true)
+                            ->whereHas('tahun_ajaran', function($query) {
+                                $query->where('is_active', true);
+                            })
                             ->when(Auth::user()->role == 2, function ($query) use ($user_id) {
                                 return $query->where('jadwals.user_id', $user_id);
                             })->get();

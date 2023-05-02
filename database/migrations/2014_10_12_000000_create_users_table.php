@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('no_HP');
             $table->string('status');
             $table->string('password');
+            $table->date('tgl_lahir');
             $table->integer('role');
             $table->text('foto')->nullable();
             $table->boolean('is_active')->default(true);
