@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('alamat');
             $table->foreignId('kelas_id');
             $table->integer('no_HP');
+            $table->integer('no_HP_ortu')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

@@ -53,6 +53,7 @@ class UserController extends Controller
                 'alamat' => 'required|max:255',
                 'no_HP' => 'required',
                 'email' => 'required',
+                'tgl_lahir' => 'required',
                 'password' => 'same:nip',
                 'status' => 'required'
             ], [
@@ -65,6 +66,7 @@ class UserController extends Controller
                 'alamat' => 'Alamat',
                 'no_HP' => 'Nomor HP',
                 'email' => 'Email',
+                'tgl_lahir' => 'Tanggal Lahir',
                 'password' => 'Password',
                 'status' => 'Status']);
 
@@ -106,6 +108,7 @@ class UserController extends Controller
                 'nama' => 'required|max:255',
                 'alamat' => 'required|max:255',
                 'no_HP' => 'required',
+                'tgl_lahir' => 'required',
                 'email' => 'required',
                 'status' => 'required'
         ];
@@ -125,6 +128,7 @@ class UserController extends Controller
             'nip' => 'NIP',
             'alamat' => 'Alamat',
             'no_HP' => 'No. HP',
+            'tgl_lahir' => 'Tanggal Lahir',
             'email' => 'Email',
             'status' => 'Status',
         ];

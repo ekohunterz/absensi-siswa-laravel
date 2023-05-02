@@ -42,6 +42,16 @@
                         @enderror
                     </div>
                     <div class="mb-3 col-md-6">
+                        <label class="form-label" for="tgl_lahir">Tanggal Lahir:</label>
+                        <input type="date" name="tgl_lahir"
+                            class="form-control border border-2 p-2 @error('tgl_lahir') is-invalid @enderror" id="tgl_lahir"
+                            value="{{ old('tgl_lahir', $data_guru->tgl_lahir) }}" onfocus="focused(this)"
+                            onfocusout="defocused(this)">
+                        @error('tgl_lahir')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3 col-md-6">
                         <label class="form-label" for="no_HP">No.HP:</label>
                         <input type="text" name="no_HP"
                             class="form-control border border-2 p-2 @error('no_HP') is-invalid @enderror" id="no_HP"

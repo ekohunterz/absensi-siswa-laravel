@@ -24,6 +24,14 @@
                             <td>: {{ $data_siswa->alamat }}</td>
                         </tr>
                         <tr>
+                            <th class="w-15">No. HP</th>
+                            <td>: {{ $data_siswa->no_HP }}</td>
+                        </tr>
+                        <tr>
+                            <th class="w-15">No. HP Orangtua</th>
+                            <td>: {{ $data_siswa->no_HP_ortu }}</td>
+                        </tr>
+                        <tr>
                             <th class="w-15">Kelas</th>
                             <td>: {{ $data_siswa->kelas->nama }}</td>
                         </tr>

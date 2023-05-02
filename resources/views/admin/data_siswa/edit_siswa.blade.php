@@ -52,7 +52,17 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="mb-3 col-md-12">
+                    <div class="mb-3 col-md-6">
+                        <label class="form-label" for="no_HP_ortu">No.HP Wali Murid:</label>
+                        <input type="text" name="no_HP_ortu"
+                            class="form-control border border-2 p-2 @error('no_HP_ortu') is-invalid @enderror"
+                            id="no_HP_ortu" value="{{ old('no_HP_ortu', $data_siswa->no_HP_ortu) }}" onfocus="focused(this)"
+                            onfocusout="defocused(this)">
+                        @error('no_HP_ortu')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3 col-md-6">
                         <label class="form-label" for="kelas_id">Kelas:</label>
                         <select name="kelas_id"
                             class="form-select border border-2 p-2 @error('kelas_id') is-invalid @enderror" id="kelas_id"

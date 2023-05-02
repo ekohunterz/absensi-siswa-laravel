@@ -70,6 +70,7 @@ class DataSiswaController extends Controller
             'nisn' => 'required|unique:data_siswas|max:10',
             'alamat' => 'required|max:255',
             'no_HP' => 'required',
+            'no_HP_ortu' => 'required',
             'kelas_id' => 'required'
         ], [
             'required' => ':attribute wajib diisi.',
@@ -80,6 +81,7 @@ class DataSiswaController extends Controller
             'nisn' => 'NISN',
             'alamat' => 'Alamat',
             'no_HP' => 'No. HP',
+            'no_HP_ortu' => 'No. HP Wali Murid',
             'kelas_id' => 'Kelas'
         ]);
 
@@ -137,6 +139,7 @@ class DataSiswaController extends Controller
             'nama' => 'required|max:255',
             'alamat' => 'required|max:255',
             'no_HP' => 'required',
+            'no_HP_ortu' => 'required',
             'kelas_id' => 'required'
         ];
 
@@ -155,6 +158,7 @@ class DataSiswaController extends Controller
             'nisn' => 'NISN',
             'alamat' => 'Alamat',
             'no_HP' => 'No. HP',
+            'no_HP_ortu' => 'No. HP Wali Murid',
             'kelas_id' => 'Kelas'
         ];
 

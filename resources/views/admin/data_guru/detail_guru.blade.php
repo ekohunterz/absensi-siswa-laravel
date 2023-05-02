@@ -24,6 +24,10 @@
                             <td>: {{ $data_guru->alamat }}</td>
                         </tr>
                         <tr>
+                            <th class="w-15">Tanggal Lahir</th>
+                            <td>: {{ $data_guru->tgl_lahir }}</td>
+                        </tr>
+                        <tr>
                             <th class="w-15">No HP</th>
                             <td>: {{ $data_guru->no_HP }}</td>
                         </tr>
